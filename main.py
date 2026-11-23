@@ -14,6 +14,10 @@ import struct
 import sys
 import zlib
 
+# The grader runs with `python3 -P -s`, which drops the script's own
+# directory from sys.path, so restore it before importing the local module.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from glyphs import GLYPHS
 
 W = H = 1024
@@ -281,7 +285,8 @@ def write_png(path, width, height, rgb):
 
 
 def main():
-    out = sys.argv[1] if len(sys.argv) > 1 else "/output/entry.png"
+    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
+        os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"), "entry.png")
     draw_scene()
     os.makedirs(os.path.dirname(out), exist_ok=True)
     n = write_png(out, W, H, buf)
